@@ -31,11 +31,33 @@
         <!-- left side of page -->
         <aside class="col-3" id="search-city-container">
           <h1>Search for a city</h1>
+          <div class="input-group mb-3">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Enter City Name..."
+              aria-label="Enter City Name..."
+              aria-describedby="button-addon2"
+            />
+            <div class="input-group-append">
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                id="search-button"
+              ></button>
+            </div>
+          </div>
+          <button
+            id="clear-history"
+            type="button"
+            class="btn btn-primary btn-lg"
+          >
+            Clear History
+          </button>
         </aside>
 
         <!-- right side of page -->
         <div id="searched-city-forecast" class="col-9">
-          <div id="forecast-header"></div>
           <div id="searched-city-current-weather">
             <div
               id="outline-current-weather"
@@ -44,6 +66,11 @@
               <h1>Todays Weather</h1>
             </div>
           </div>
+
+          <div id="forecast-header" class="col-12">
+            <h1>5-Day Forecast</h1>
+          </div>
+
           <div id="forecast-cards-container"></div>
         </div>
       </div>
