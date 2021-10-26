@@ -57,10 +57,11 @@
         </aside>
 
         <!-- right side of page -->
-        <div id="searched-city-forecast" class="col-9">
+        <div id="searched-city-current-and-forecast" class="col-9">
           <div id="searched-city-current-weather">
+            <!-- will dynamically add name, temp, wind speed, and UV index -->
             <div
-              id="outline-current-weather"
+              id="current-weather-container"
               class="col-15 border border-dark m-3 rounded"
             >
               <h1>Todays Weather</h1>
@@ -71,12 +72,15 @@
             <h1>5-Day Forecast</h1>
           </div>
 
-          <div id="forecast-cards-container"></div>
+          <div id="forecast-cards-container">
+            <!-- dynamically add cards -->
+          </div>
         </div>
       </div>
     </main>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="./assets/js/script.js"></script>
   </body>
 </html>

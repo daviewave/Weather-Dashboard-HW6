@@ -1,6 +1,6 @@
 //DEPENDECIES
 //to target/add the searched cities attributes
-var $currentWeatherAttributes = $("#outline-current-weather");
+var $currentWeatherAttributes = $("#current-weather-container");
 //to target/add the forecast cards in the container one by one
 var $forecastCards = $("#forecast-cards-container");
 
@@ -13,6 +13,8 @@ var currentYear = moment().format("YYYY");
 var currentDay = moment().format("DD");
 var currentMonth = moment().format("MM");
 
+var searchedCities = [];
+
 console.log(currentYear);
 console.log(currentDay);
 console.log(currentMonth);
@@ -22,6 +24,22 @@ console.log(a);
 
 //FUNCTIONS
 function createCurrentWeatherdisplay() {}
+
+function createcurrentWeatherHeader($curWeather) {
+  var $currentWeatherHeader = $("<div>");
+  $currentWeatherHeader.addClass("col-12");
+
+  var $cityName = $("<h1>");
+  $cityName.attr("id", "city-name-header");
+  //   $cityName.text(getCity());
+
+  var $currentWeatherIcon = $("<img>");
+
+  $currentWeatherHeader.append($cityName);
+  $currentWeatherHeader.append($currentWeatherIcon);
+
+  $curWeather.append($currentWeatherHeader);
+}
 
 //HELPER FUNCTIONS
 function getCity() {}
