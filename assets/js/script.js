@@ -4,6 +4,11 @@ var $currentWeatherAttributes = $("#current-weather-container");
 //to target/add the forecast cards in the container one by one
 var $forecastCards = $("#forecast-cards-container");
 
+var searchCities = JSON.parse(localStorage.getItem("searchedCities"));
+console.log(searchCities);
+
+var searchsArr = [];
+
 //DATA
 //api key to gain access to weather api when requesting below
 const APIKey = "ac5cdfbb230d2506d7a3adace9626884";
@@ -55,8 +60,6 @@ function getIconBasedOnCurrentWeather() {}
 
 function getColorOfUVindex() {}
 
-function checkSavedSearchs() {}
-
 //USER INTERACTIONS
 //when user clicks save need to handle in a function
 
@@ -66,7 +69,7 @@ getInput.addEventListener("click", function (event) {
   event.preventDefault();
 
   var $input = $("#input");
-  searchedCities.unshift($input.val());
-  console.log(searchedCities);
-  localStorage.setItem("searchedCities", JSON.stringify(savedTasks));
+  searchsArr.unshift($input.val());
+  console.log(searchsArr);
+  localStorage.setItem("searchedCities", JSON.stringify(searchsArr));
 });
