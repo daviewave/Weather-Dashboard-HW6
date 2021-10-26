@@ -33,7 +33,8 @@ function createcurrentWeatherHeader($curWeather) {
 
   var $cityName = $("<h1>");
   $cityName.attr("id", "city-name-header");
-  //   $cityName.text(getCity());
+  $cityName.text(getCity());
+  console.log($cityName.text);
 
   var $currentWeatherIcon = $("<img>");
 
@@ -80,3 +81,5 @@ getInput.addEventListener("click", function (event) {
   console.log(searchsArr);
   localStorage.setItem("searchedCities", JSON.stringify(searchsArr));
 });
+
+createcurrentWeatherHeader($currentWeatherAttributes);
