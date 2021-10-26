@@ -44,7 +44,14 @@ function createcurrentWeatherHeader($curWeather) {
 }
 
 //HELPER FUNCTIONS
-function getCity() {}
+//returns a string of the name of the last city searched
+function getCity() {
+  if (searchCities === null) {
+    return "NO CITY SEARCHED YET";
+  } else {
+    return searchCities[0];
+  }
+}
 
 function getCityTemperature() {}
 
