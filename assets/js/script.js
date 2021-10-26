@@ -19,9 +19,6 @@ console.log(currentYear);
 console.log(currentDay);
 console.log(currentMonth);
 
-var a = "https://api.openweathermap.org/data/2.5/weather?q=London&appid=APIKey";
-console.log(a);
-
 //FUNCTIONS
 function createCurrentWeatherdisplay() {}
 
@@ -58,4 +55,18 @@ function getIconBasedOnCurrentWeather() {}
 
 function getColorOfUVindex() {}
 
+function checkSavedSearchs() {}
+
 //USER INTERACTIONS
+//when user clicks save need to handle in a function
+
+var getInput = document.getElementById("search-button");
+
+getInput.addEventListener("click", function (event) {
+  event.preventDefault();
+
+  var $input = $("#input");
+  searchedCities.unshift($input.val());
+  console.log(searchedCities);
+  localStorage.setItem("searchedCities", JSON.stringify(savedTasks));
+});
