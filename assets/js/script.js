@@ -5,13 +5,14 @@ var $currentWeatherAttributes = $("#current-weather-container");
 var $forecastCards = $("#forecast-cards-container");
 
 var searchCities = JSON.parse(localStorage.getItem("searchedCities"));
-console.log(searchCities);
+// console.log(searchCities);
 
 var searchsArr = [];
 
 //DATA
 //api key to gain access to weather api when requesting below
 const APIKey = "ac5cdfbb230d2506d7a3adace9626884";
+
 //variables that store the current day
 var currentDate = moment().format("MMMM Do YYYY");
 var currentYear = moment().format("YYYY");
@@ -20,9 +21,9 @@ var currentMonth = moment().format("MM");
 
 var searchedCities = [];
 
-console.log(currentYear);
-console.log(currentDay);
-console.log(currentMonth);
+// console.log(currentYear);
+// console.log(currentDay);
+// console.log(currentMonth);
 
 //FUNCTIONS
 function createCurrentWeatherdisplay() {}
@@ -34,7 +35,6 @@ function createcurrentWeatherHeader($curWeather) {
   var $cityName = $("<h1>");
   $cityName.attr("id", "city-name-header");
   $cityName.text(getCity());
-  console.log($cityName.text);
 
   var $currentWeatherIcon = $("<img>");
 
@@ -50,7 +50,10 @@ function getCity() {
   if (searchCities === null) {
     return "NO CITY SEARCHED YET";
   } else {
-    return searchCities[0];
+    curCity = JSON.stringify(searchCities[0]);
+    curCity = curCity.replace(/"/g,"");
+    console.log(curCity);
+    return curCity;
   }
 }
 
@@ -78,7 +81,7 @@ getInput.addEventListener("click", function (event) {
 
   var $input = $("#input");
   searchsArr.unshift($input.val());
-  console.log(searchsArr);
+  // console.log(searchsArr);
   localStorage.setItem("searchedCities", JSON.stringify(searchsArr));
 });
 
