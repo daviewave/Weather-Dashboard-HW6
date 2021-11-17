@@ -20,6 +20,8 @@ var currentMonth = moment().format("MM");
 
 var searchedCities = [];
 
+const iconURL = new Array();
+
 // console.log(currentYear);
 // console.log(currentDay);
 // console.log(currentMonth);
@@ -27,51 +29,8 @@ var searchedCities = [];
 //FUNCTIONS
 function createCurrentWeatherdisplay() {}
 
-// function createcurrentWeatherHeader(
-//   city,
-//   date,
-//   weatherIcon,
-//   temperature,
-//   humidity,
-//   windSpeed,
-//   UVindex
-// ) {
-//   var $currentWeatherHeader = $("<div>");
-//   $currentWeatherHeader.addClass("col-12");
-
-//   var $currentWeatherIcon = $("<img>");
-
-//   var $cityName = $("<h1>");
-//   $cityName.attr("id", "city-name-header");
-//   $cityName.text(city + " (" + currentDate + ") ");
-
-//   $currentWeatherHeader.append($cityName);
-//   $currentWeatherHeader.append($currentWeatherIcon);
-
-//   $curWeather.append($currentWeatherHeader);
-// }
-
 //USER INTERACTIONS
 //when user clicks save need to handle in a function
-
-var getInput = document.getElementById("search-button");
-
-getInput.addEventListener("click", function (event) {
-  event.preventDefault();
-
-  //gets city to search based on input passed in
-  var $input = $("#input");
-  searchsArr.unshift($input.val());
-  localStorage.setItem("searchedCities", JSON.stringify(searchsArr));
-  let currentCity = getCity();
-
-  let curURL = getAPIurl(currentCity);
-  let curDate = getCurDate();
-  setCurrentCityAndDate(getCity(), getCurDate());
-
-
-  // createcurrentWeatherHeader(currentCity, $currentWeatherAttributes);
-});
 
 //returns a string of the name of the last city searched
 function getCity() {
@@ -85,13 +44,13 @@ function getCity() {
   }
 }
 
-function getCurDate(){
+function getCurDate() {
   return moment().format("MMMM Do YYYY");
 }
 
 function setCurrentCityAndDate(city, date) {
   var $cityAndDate = $("#cityAndDate");
-  $cityAndDate.text(city +  "  (" + date + ")  ");
+  $cityAndDate.text(city + "  (" + date + ")  ");
 }
 
 //so I can get the rest of the stuff I need
@@ -102,43 +61,100 @@ function getAPIurl(city) {
     city +
     "&appid=" +
     APIKey;
-  console.log(queryURL);
 
   return queryURL;
 }
 
-function getIconBasedOnCurrentWeather(APIurl){
-  
-  axios.get(APIurl)
-    .then(function (response) {
+function getUV_APIurl(lat, lon) {
+  //Reaches out to API with url and key
+  let uvURL =
+    "https://api.openweathermap.org/data/2.5/uvi/forecast?lat=" +
+    lat +
+    "&lon=" +
+    lon +
+    "&appid=" +
+    APIKey +
+    "&cnt=1";
 
-    });
-    return $currentWeatherIcon;
+  return uvURL;
 }
 
-function getCityTemperature(APIurl) {}
+function getIconBasedOnCurrentWeather(APIurl) {
+  axios.get(APIurl).then(function (response) {
+    const weatherIcon = response.data.weather[0].icon;
+    const curIcon =
+      "https://openweathermap.org/img/wn/" + weatherIcon + "@2x.png";
+    setIconBasedOnCurrentWeather(curIcon);
+  });
+}
 
-function getCityHumidity(APIurl) {}
+function setIconBasedOnCurrentWeather(link) {
+  let $currentWeatherIcon = $("#weatherIconImg");
+  $currentWeatherIcon.attr("src", link);
+}
 
-function getCityWindSpeed(APIurl) {}
+function setTemp(temp) {
+  let $currentTemp = $("#temperature");
+  $currentTemp.text("Temperature: " + temp);
+}
 
-function getCityUVindex(APIurl) {}
+function setHumidity(humid) {
+  let $currentHumid = $("#humidity");
+  $currentHumid.text("Humidity: " + humid + "%");
+}
 
-function getColorOfUVindex(APIurl) {}
+function setWind(wind) {
+  let $currentHumid = $("#wind-speed");
+  $currentHumid.text("Wind Speed: " + wind + " MPH");
+}
 
+function setUV(uv) {
+  let $currentHumid = $("#UV-index");
+  $currentHumid.text("UV index: " + uv);
+}
 
+var getInput = document.getElementById("search-button");
 
+getInput.addEventListener("click", function (event) {
+  event.preventDefault();
 
+  //gets city to search based on input passed in
+  var $input = $("#input");
+  searchsArr.unshift($input.val());
+  localStorage.setItem("searchedCities", JSON.stringify(searchsArr));
+  const url = getAPIurl(getCity());
 
+  //1. Sets city searched and current date
+  console.log(getCity());
+  setCurrentCityAndDate(getCity(), getCurDate());
 
-// function getCurCityWeather(city) {
-//   //uses created url string to call and get info
-//   axios.get(queryURL).then(function (response) {
-//     //1. get weather icon
-//     let weatherIcon = response.data.weather[0].icon;
-//     let curTemp = response.data.main.temp;
-//     console.log(weatherIcon);
-//     console.log(curTemp);
-//   });
-// }
-// getCurCityWeather(getCity());
+  //2.gets and sets weather icon
+  axios.get(url).then(function (response) {
+    const weatherIcon = response.data.weather[0].icon;
+    const curIcon =
+      "https://openweathermap.org/img/wn/" + weatherIcon + "@2x.png";
+    setIconBasedOnCurrentWeather(curIcon);
+
+    const curTemp = response.data.main.temp;
+    setTemp(curTemp);
+
+    const curHumidity = response.data.main.humidity;
+    setHumidity(curHumidity);
+
+    const curWind = response.data.wind.speed;
+    setWind(curWind);
+
+    let lat = response.data.coord.lat;
+    let lon = response.data.coord.lon;
+    let uvURL = getUV_APIurl(lat, lon);
+    axios.get(uvURL).then(function (response) {
+      const curUV = response.data[0].value;
+      setUV(curUV);
+    });
+  });
+
+  //
+
+  // createcurrentWeatherHeader(currentCity, $currentWeatherAttributes);
+});
+
