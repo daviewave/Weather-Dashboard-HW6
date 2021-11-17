@@ -5,7 +5,6 @@ var $currentWeatherAttributes = $("#current-weather-container");
 var $forecastCards = $("#forecast-cards-container");
 
 var searchCities = JSON.parse(localStorage.getItem("searchedCities"));
-// console.log(searchCities);
 
 var searchsArr = [];
 
@@ -20,26 +19,17 @@ var currentMonth = moment().format("MM");
 
 var searchedCities = [];
 
-const iconURL = new Array();
-
-// console.log(currentYear);
-// console.log(currentDay);
-// console.log(currentMonth);
-
 //FUNCTIONS
-function createCurrentWeatherdisplay() {}
 
 //USER INTERACTIONS
-//when user clicks save need to handle in a function
 
 //returns a string of the name of the last city searched
 function getCity() {
   if (searchCities === null) {
     return "NO CITY SEARCHED YET";
   } else {
-    curCity = JSON.stringify(searchCities[0]);
+    curCity = JSON.stringify(searchsArr[0]);
     curCity = curCity.replace(/"/g, "");
-    console.log(curCity);
     return curCity;
   }
 }
@@ -79,6 +69,17 @@ function getUV_APIurl(lat, lon) {
   return uvURL;
 }
 
+function get5DayForecastURL(id) {
+  //Reaches out to API with url and key
+  let forecastQueryURL =
+    "https://api.openweathermap.org/data/2.5/forecast?id=" +
+    id +
+    "&appid=" +
+    APIKey;
+
+  return forecastQueryURL;
+}
+
 function getIconBasedOnCurrentWeather(APIurl) {
   axios.get(APIurl).then(function (response) {
     const weatherIcon = response.data.weather[0].icon;
@@ -113,6 +114,10 @@ function setUV(uv) {
   $currentHumid.text("UV index: " + uv);
 }
 
+function k2f(K) {
+  return Math.floor((K - 273.15) * 1.8 + 32);
+}
+
 var getInput = document.getElementById("search-button");
 
 getInput.addEventListener("click", function (event) {
@@ -122,10 +127,14 @@ getInput.addEventListener("click", function (event) {
   var $input = $("#input");
   searchsArr.unshift($input.val());
   localStorage.setItem("searchedCities", JSON.stringify(searchsArr));
+
+  updateSearchedCityWeather();
+});
+
+function updateSearchedCityWeather() {
   const url = getAPIurl(getCity());
 
   //1. Sets city searched and current date
-  console.log(getCity());
   setCurrentCityAndDate(getCity(), getCurDate());
 
   //2.gets and sets weather icon
@@ -151,10 +160,58 @@ getInput.addEventListener("click", function (event) {
       const curUV = response.data[0].value;
       setUV(curUV);
     });
+
+    let forecast = response.data.id;
+    let forecaseURL = get5DayForecastURL(forecast);
+    axios.get(forecaseURL).then(function (response) {
+      //  Parse response to display forecast for next 5 days
+      const forecastDays = document.querySelectorAll(".forecast");
+      for (i = 0; i < forecastDays.length; i++) {
+        //forecast date
+        forecastDays[i].innerHTML = "";
+        const currentForecastDay = i * 8 + 4;
+
+        const forecastDate = new Date(
+          response.data.list[currentForecastDay].dt * 1000
+        );
+        const curForecastDay = forecastDate.getDate();
+        const curForecastMonth = forecastDate.getMonth() + 1;
+        const curForecastYear = forecastDate.getFullYear();
+        const forecastDateElement = document.createElement("p");
+        forecastDateElement.innerHTML =
+          curForecastMonth + "/" + curForecastDay + "/" + curForecastYear;
+        forecastDays[i].append(forecastDateElement);
+
+        //forecast icon
+        const forecastWeatherImg = document.createElement("img");
+        forecastWeatherImg.setAttribute(
+          "src",
+          "https://openweathermap.org/img/wn/" +
+            response.data.list[currentForecastDay].weather[0].icon +
+            "@2x.png"
+        );
+        forecastWeatherImg.setAttribute(
+          "alt",
+          response.data.list[currentForecastDay].weather[0].description
+        );
+        forecastDays[i].append(forecastWeatherImg);
+
+        //forecast temp
+        const forecastTemp = document.createElement("p");
+        forecastTemp.innerHTML =
+          "Temp: " +
+          k2f(response.data.list[currentForecastDay].main.temp) +
+          " &#176F";
+        forecastDays[i].append(forecastTemp);
+
+        //forecast humid
+        const forecastHumidity = document.createElement("p");
+        forecastHumidity.innerHTML =
+          "Humidity: " +
+          response.data.list[currentForecastDay].main.humidity +
+          "%";
+        forecastDays[i].append(forecastHumidity);
+      }
+    });
   });
-
-  //
-
-  // createcurrentWeatherHeader(currentCity, $currentWeatherAttributes);
-});
-
+}
