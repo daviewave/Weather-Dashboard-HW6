@@ -25,7 +25,7 @@ var searchedCities = [];
 
 //returns a string of the name of the last city searched
 function getCity() {
-  if (searchCities === null) {
+  if (searchsArr === null) {
     return "NO CITY SEARCHED YET";
   } else {
     curCity = JSON.stringify(searchsArr[0]);
